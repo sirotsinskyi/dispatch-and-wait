@@ -23,7 +23,7 @@ function find_workflow {
     counter=$(( $counter + 1 ))
     workflow=$(curl -s "https://api.github.com/repos/${INPUT_OWNER}/${INPUT_REPO}/actions/runs?event=repository_dispatch" \
       -H "Accept: application/vnd.github.v3+json" \
-      -H "Authorization: Bearer ${INPUT_TOKEN}" | jq '.workflow_runs[0]')
+      -H "Authorization: Bearer ${INPUT_TOKEN}" |jq '[.workflow_runs[] | select(.display_title == $title)][0]' --arg title ${INPUT_EVENT_TYPE})
 
     wtime=$( echo $(echo $workflow | jq '.created_at') | cut -c13-20 )
     atime=$(date -u +%T)
