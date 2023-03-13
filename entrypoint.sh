@@ -21,7 +21,7 @@ function find_workflow {
   while [[ true ]]
   do
     counter=$(( $counter + 1 ))
-    workflow=$(curl -s "https://api.github.com/repos/${INPUT_OWNER}/${INPUT_REPO}/actions/runs?event=repository_dispatch" \
+    workflow=$(curl -s "https://api.github.com/repos/${INPUT_OWNER}/${INPUT_REPO}/actions/runs?event=repository_dispatch&sort:created" \
       -H "Accept: application/vnd.github.v3+json" \
       -H "Authorization: Bearer ${INPUT_TOKEN}" |jq '[.workflow_runs[] | select(.display_title == $title)][0]' --arg title ${INPUT_EVENT_TYPE})
 
