@@ -28,7 +28,13 @@ function find_workflow {
     wtime=$( echo $(echo $workflow | jq '.created_at') | cut -c13-20 )
     atime=$(date -u +%T)
     tdif=$(( $(date -d "$atime" +"%s") - $(date -d "$wtime" +"%s") ))
-    
+
+    wfid=$(echo $workflow | jq '.id')
+    echo  "Attempt #${counter}, workflow id: ${wfid}"
+    echo "Last running action start time: ${wtime}"
+    echo "Current time: ${atime}"
+    echo -e "Invoked ${tdif} seconds ago\n"
+
     if [[ "$tdif" -gt "10" ]]
     then
       if [[ "$counter" -gt "3" ]]
