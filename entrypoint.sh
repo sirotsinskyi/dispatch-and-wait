@@ -27,32 +27,43 @@ function find_workflow {
 
     wtime=$(echo $workflow | jq -r '.created_at')
     atime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    tdif=$(( $(date -d "$atime" +"%s") - $(date -d "$wtime" +"%s") ))
+
+    if [[ "$wtime" == null ]]
+      then
+        echo "Last workflow run not found"
+        checkCounter
+        continue
+    fi
 
     wfid=$(echo $workflow | jq '.id')
-    echo  "Attempt #${counter}, workflow id: ${wfid}"
+    echo -e "\nAttempt #${counter}, workflow id: ${wfid}"
     echo "Last running action start time: ${wtime}"
     echo "Current time: ${atime}"
-    echo -e "Invoked ${tdif} seconds ago\n"
+
+    tdif=$(( $(date -d "$atime" +"%s") - $(date -d "$wtime" +"%s") ))
+    echo "Invoked ${tdif} seconds ago"
 
     if [[ "$tdif" -gt "10" ]]
     then
-      if [[ "$counter" -gt "3" ]]
-      then
-        echo "Workflow not found"
-        exit 1
-      else
-        sleep 2
-      fi
+      checkCounter
     else
       break
     fi
   done
 
-  wfid=$(echo $workflow | jq '.id')
   conclusion=$(echo $workflow | jq '.conclusion')
-  
+
   echo "Workflow id is ${wfid}"
+}
+
+function checkCounter {
+  if [[ "$counter" -gt "3" ]]
+    then
+      echo "Workflow not found"
+      exit 1
+    else
+      sleep 2
+  fi
 }
 
 function wait_on_workflow {
