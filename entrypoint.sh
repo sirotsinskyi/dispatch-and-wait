@@ -25,8 +25,8 @@ function find_workflow {
       -H "Accept: application/vnd.github.v3+json" \
       -H "Authorization: Bearer ${INPUT_TOKEN}" |jq '[.workflow_runs[] | select(.display_title == $title)][0]' --arg title ${INPUT_EVENT_TYPE})
 
-    wtime=$( echo $(echo $workflow | jq '.created_at') | cut -c13-20 )
-    atime=$(date -u +%T)
+    wtime=$(echo $workflow | jq -r '.created_at')
+    atime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     tdif=$(( $(date -d "$atime" +"%s") - $(date -d "$wtime" +"%s") ))
 
     wfid=$(echo $workflow | jq '.id')
