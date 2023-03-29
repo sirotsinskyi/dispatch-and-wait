@@ -52,7 +52,6 @@ function find_workflow {
   done
 
   conclusion=$(echo $workflow | jq '.conclusion')
-
   echo "Workflow id is ${wfid}"
 }
 
