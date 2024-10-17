@@ -66,6 +66,12 @@ function checkCounter {
 }
 
 function wait_on_workflow {
+  if [[ "$INPUT_MAX_TIME" -eq "-1" ]]
+  then
+    echo "Fire & forget mode: skipping workflow check"
+    exit 0
+  fi
+
   counter=0
   while [[ $conclusion == "null" ]]
   do
